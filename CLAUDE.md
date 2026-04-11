@@ -1,105 +1,91 @@
-# CLAUDE.md — nextjs-bun-starter
+# CLAUDE.md
 
-## Project Overview
+Claude Code project instructions for the IS219 portfolio.
 
-Production-ready Next.js 16 starter template built with Bun. Designed as a minimal, opinionated foundation for new projects — not a kitchen-sink boilerplate.
+## Project
 
-- **Runtime**: Bun (dev/build), Node 22 Alpine (Docker production)
-- **Framework**: Next.js 16 with App Router, React 19, React Compiler enabled
-- **Language**: TypeScript (strict mode, `target: ES2022`)
+Personal portfolio for Justin Cordova (IS219 — Web Presence Workshop).
+The full specification lives in [`docs/SPEC.md`](./docs/SPEC.md). Read it
+before making architecture decisions.
 
-## Architecture Decisions (locked)
+The portfolio follows the professor's Signal → Publish framework, analyzed
+in [`professor-guide-analysis.md`](./professor-guide-analysis.md).
 
-These choices are final. Do not suggest alternatives or migrations.
+## Foundation
 
-| Component      | Choice                                     | Rationale                                                 |
-| -------------- | ------------------------------------------ | --------------------------------------------------------- |
-| Logger         | Winston                                    | File transports, format flexibility, redaction support    |
-| Rate limiting  | rate-limiter-flexible (in-memory)          | Simple, zero-infra default; Redis swap documented in code |
-| Env validation | Zod v4 (`zod/v4` import)                   | Runtime validation with `safeParse`, `prettifyError`      |
-| CSS            | Tailwind v4 with `@theme` API              | PostCSS plugin (`@tailwindcss/postcss`)                   |
-| Testing        | Vitest + Testing Library + jsdom           | Fast, ESM-native, React 19 compatible                     |
-| Middleware     | `src/proxy.ts`                             | Next.js 16 convention (replaces `middleware.ts`)          |
-| CSP            | `unsafe-inline` for styles and scripts     | Required by Next.js inline scripts/styles                 |
-| Error handling | `ApiError` class + `handleApiError` helper | In `src/lib/api-error.ts`                                 |
-| Docker         | Multi-stage build, standalone output       | Bun builds, Node 22 Alpine runs                           |
-| Font           | Geist Mono only                            | Monospace-first design, single font load                  |
-| Utilities      | `clsx` + `tailwind-merge` via `cn()`       | In `src/utils/cn.ts`                                      |
-| Formatting     | Biome + Husky + lint-staged                | All-in-one linter + formatter; pre-commit hooks enforce style |
+- Scaffolded from `~/cs/templates/nextjs-bun-starter`
+- Content + patterns borrowed from `~/cs/projects/justin` (the previous
+  `justincordova.dev` site). **Do not port its visual style** — new portfolio
+  uses a different archetype (Sage) and style (Structured Brutalist).
+
+## Stack
+
+- Next.js 16 (App Router)
+- React 19
+- TypeScript strict
+- Tailwind v4 (tokens in `src/app/globals.css`)
+- Bun (runtime + package manager)
+- Biome (lint + format)
+- Vitest + @testing-library/react (tests)
+- `next/font/google` — Geist Mono + Geist Sans
+
+## Design system (locked — see SPEC §3)
+
+- Dark theme only, no toggle.
+- Palette tokens in `src/app/globals.css`:
+  - `bg: #0a0a0a`, `fg: #f5f5f5`, `muted: #737373`,
+    `border: #1f1f1f`, `accent: #FFB020`, `accent-dim: #b37a10`
+- Typography: Geist Mono for chrome/labels/buttons, Geist Sans for body.
+- Hard rectangles only — no rounded corners, no soft shadows, no gradients.
+- Accent used only on interactive elements (links, CTAs, focus rings).
+
+## Routes
+
+- `/` — Home (Hero, 3 ProofBlocks, AboutBlock, ContactFooter)
+- `/projects` — All-projects grid (fetched from GitHub API proxy)
+- `/projects/findu` — Deep case-study writeup
+
+Nothing else ships. See SPEC §8 for what's explicitly out of scope.
+
+## Content
+
+All written content lives under `src/content/` as typed TS files:
+
+- `profile.ts` — name, role, links, contact
+- `proof.ts` — the three proof blocks (findu, dotcor, cspathfinder)
+- `findu.ts` — the deep writeup
+- `projects.ts` — curated repo list for `/projects`
+
+Never fetch proof content or the findu writeup at runtime. Only the
+`/projects` index talks to GitHub.
+
+## GitHub API
+
+Proxied through `src/app/api/github/repos/route.ts`. Uses Next.js
+`revalidate` for caching (1 hour). No client-side token exposure.
+
+## Commands
+
+```bash
+bun run dev           # dev server
+bun run build         # production build
+bun run start         # serve production build
+bun run test          # vitest run
+bun run type-check    # tsc --noEmit
+bun run lint          # biome check
+```
 
 ## Conventions
 
-### Imports and paths
+- Run `bun run type-check && bun run test && bun run lint` before committing.
+- Commits are task-scoped. Format: `type(scope): description`. No AI
+  attribution. (See user's global `~/.claude/CLAUDE.md`.)
+- Tests live under `src/tests/` mirroring `src/` paths.
+- Use the `@/` alias for imports.
+- Keep components small and single-purpose — if a file grows past ~150 lines,
+  split it.
 
-- Path alias: `@/` → `src/`
-- Direct imports preferred over barrel imports for tree-shaking
-- Barrel exports (`index.ts`) with actual exports: `lib/`, `utils/`
-- Empty `index.ts` placeholder files in `components/`, `hooks/`, `services/`, `types/`, `constants/` — for git tracking only, do not add barrel exports until there is content to export
+## Planning docs
 
-### Server-only enforcement
-
-- All `src/lib/` files use `"server-only"` import (either directly or via the barrel)
-- `src/lib/index.ts` has `import "server-only"` at the top
-
-### File organization
-
-- `src/lib/` — server-only infrastructure (logger, env, rate-limit, api-error, api-wrapper)
-- `src/utils/` — shared utilities safe for client and server (`cn`)
-- `src/app/api/` — API route handlers
-- `src/tests/` — test files
-- `src/proxy.ts` — middleware (Next.js 16)
-
-### Code style
-
-- No empty placeholder files in `src/app/` or `src/lib/` — every file must have content
-- Exception: `src/components/index.ts`, `src/hooks/index.ts`, `src/services/index.ts`, `src/types/index.ts`, `src/constants/index.ts` are intentionally empty (git tracking placeholders)
-- No `console.log` / `console.error` in server code — use `logger` from `@/lib/logger`
-- Exception: `error.tsx` is a client component and uses `console.error` (cannot import server logger)
-- Security headers defined in `next.config.ts` via `headers()`, not in middleware
-
-## Quality Checklist
-
-Run these before considering the starter complete:
-
-```bash
-bun run test          # Vitest test suite passes
-bun run type-check    # tsc --noEmit passes
-bun lint              # Biome lint passes
-bun run build         # Next.js build produces no warnings
-```
-
-Additionally verify:
-
-- No unused dependencies in `package.json`
-- `.env.example` documents all env vars (`NODE_ENV`, `LOG_LEVEL`, `LOG_DIR`, `NEXT_PUBLIC_APP_URL`)
-- README env var table matches `.env.example`
-- All `src/lib/` files import `"server-only"` (directly or via barrel)
-- No `console.log` / `console.error` in server code (use logger)
-
-## Do NOT Change
-
-These are intentional decisions. Do not "fix" or suggest alternatives:
-
-- **No `suppressHydrationWarning`** on `<html>` — there is no theme toggle, so it's unnecessary
-- **`unsafe-inline` in CSP** `style-src` and `script-src` — required by Next.js
-- **Winston over Pino** — project decision for file transports and format flexibility
-- **In-memory rate limiter** — Redis swap is documented in `rate-limit.ts` comments; default is intentionally zero-infra
-- **`console.error` in `error.tsx`** — client component, cannot use server-side logger
-- **No axios** — removed intentionally; `fetch` is the standard
-- **`zod/v4` import path** — Zod v4 requires this import path, not `zod`
-- **Single font (Geist Mono)** — monospace-first design choice, not an oversight
-- **`_request` unused param in `proxy.ts`** — placeholder for future middleware logic
-
-## Scripts Reference
-
-```
-bun dev              # Start dev server
-bun run build        # Production build
-bun start            # Start production server
-bun lint             # Run Biome lint (with auto-fix)
-bun run format       # Run Biome formatter
-bun run type-check   # TypeScript type checking
-bun run test         # Run tests
-bun run test:ui      # Vitest UI
-bun run test:coverage # Coverage report
-```
+Implementation plans live in `docs/plans/` and are gitignored (local working
+notes only). The spec in `docs/SPEC.md` is the source of truth.

@@ -18,11 +18,10 @@ export const metadata: Metadata = {
   title: "Justin Cordova — Full-Stack Engineer",
   description:
     "I build thoughtful full-stack software — where the code, the UX, and the decisions all hang together.",
-  metadataBase: new URL("https://justincordova.dev"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL ?? "https://justincordova.dev"
+  ),
   openGraph: {
-    title: "Justin Cordova — Full-Stack Engineer",
-    description:
-      "I build thoughtful full-stack software — where the code, the UX, and the decisions all hang together.",
     type: "website",
   },
 };

@@ -1,30 +1,47 @@
 import type { Metadata } from "next";
-import { Geist_Mono } from "next/font/google";
-import { env } from "@/lib/env";
-import { cn } from "@/utils/cn";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
-  title: {
-    default: "Next.js Bun Starter",
-    template: "%s | Next.js Bun Starter",
+  title: "Justin Cordova — Full-Stack Engineer",
+  description:
+    "I build thoughtful full-stack software — where the code, the UX, and the decisions all hang together.",
+  metadataBase: new URL("https://justincordova.dev"),
+  openGraph: {
+    title: "Justin Cordova — Full-Stack Engineer",
+    description:
+      "I build thoughtful full-stack software — where the code, the UX, and the decisions all hang together.",
+    type: "website",
   },
-  description: "Production-ready Next.js starter with Bun, TypeScript, and Tailwind CSS.",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={cn(geistMono.variable, "bg-background font-mono antialiased")}>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body>
+        <a href="#main" className="skip-to-content">
+          Skip to content
+        </a>
         {children}
       </body>
     </html>
   );
 }
+
+// Each page is responsible for its own <Nav />, <main id="main">, and <Footer />
+// so that Nav and Footer sit outside <main> (correct landmark semantics) and
+// the skip-to-content link lands on actual content.

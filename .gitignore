@@ -34,3 +34,9 @@ next-env.d.ts
 
 # local-only docs
 docs/plans/
+
+# PDFs
+*.pdf
+
+# Claude Code local settings
+.claude/

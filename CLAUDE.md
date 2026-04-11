@@ -9,7 +9,7 @@ The full specification lives in [`docs/SPEC.md`](./docs/SPEC.md). Read it
 before making architecture decisions.
 
 The portfolio follows the professor's Signal → Publish framework, analyzed
-in [`professor-guide-analysis.md`](./professor-guide-analysis.md).
+in [`docs/professor-guide-analysis.md`](./docs/professor-guide-analysis.md).
 
 ## Foundation
 
@@ -34,9 +34,9 @@ in [`professor-guide-analysis.md`](./professor-guide-analysis.md).
 - Dark theme only, no toggle.
 - Palette tokens in `src/app/globals.css`:
   - `bg: #0a0a0a`, `fg: #f5f5f5`, `muted: #737373`,
-    `border: #1f1f1f`, `accent: #FFB020`, `accent-dim: #b37a10`
-- Typography: Geist Mono for chrome/labels/buttons, Geist Sans for body.
-- Hard rectangles only — no rounded corners, no soft shadows, no gradients.
+    `border: #1f1f1f`, `accent: #FFB020` (links/CTAs/focus rings), `accent-dim: #b37a10` (visited links, pressed states)
+- Typography: Geist Mono for chrome/labels/buttons, Geist Sans for body. Hero H1 uses Geist Sans at 700+ weight (oversized display).
+- Hard rectangles only — no rounded corners, no soft shadows, no gradients, no blur effects.
 - Accent used only on interactive elements (links, CTAs, focus rings).
 
 ## Routes

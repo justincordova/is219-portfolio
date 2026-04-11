@@ -5,9 +5,10 @@ import { Footer } from "@/components/layout/Footer";
 import { WriteupHeader } from "@/components/writeup/WriteupHeader";
 import { DecisionList } from "@/components/writeup/DecisionList";
 import { CodeSnippet } from "@/components/writeup/CodeSnippet";
+import type { Metadata } from "next";
 import { finduWriteup } from "@/content/findu";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "findu — Justin Cordova",
   description: finduWriteup.promise,
 };

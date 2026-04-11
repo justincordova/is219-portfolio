@@ -37,6 +37,7 @@ docs/plans/
 
 # PDFs
 *.pdf
+!public/resume.pdf
 
 # Claude Code local settings
 .claude/

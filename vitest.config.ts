@@ -22,6 +22,7 @@ export default defineConfig({
       "server-only": path.resolve(__dirname, "./src/tests/__mocks__/server-only.ts"),
       "next/font/google": path.resolve(__dirname, "./src/tests/__mocks__/next-font-google.ts"),
       "next/link": path.resolve(__dirname, "./src/tests/__mocks__/next-link.tsx"),
+      "next/image": path.resolve(__dirname, "./src/tests/__mocks__/next-image.tsx"),
     },
   },
 });

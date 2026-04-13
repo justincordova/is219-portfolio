@@ -1,5 +1,5 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import type { ProofBlock as ProofBlockType } from "@/content/proof";
 
 type Props = { block: ProofBlockType; index: number };
@@ -7,18 +7,16 @@ type Props = { block: ProofBlockType; index: number };
 export function ProofBlock({ block, index }: Props) {
   const label = `PROOF ${String(index).padStart(2, "0")}`;
   return (
-    <article className="border-b border-border">
+    <article className="scratch-divider">
       <div className="mx-auto max-w-5xl px-6 py-12">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted">
-          {label}
-        </p>
-        <h2 className="mt-2 font-sans text-3xl font-bold md:text-4xl">
+        <p className="font-mono text-xs uppercase tracking-widest text-rust">{label}</p>
+        <h2 className="grunge-heading mt-2 font-sans text-3xl font-bold md:text-4xl">
           {block.title}
         </h2>
         <p className="mt-2 font-sans text-lg text-muted">{block.subtitle}</p>
 
         <div className="mt-8 grid gap-8 md:grid-cols-[1fr_1.2fr]">
-          <div className="border border-border">
+          <div className="grunge-image rough-border overflow-hidden">
             <Image
               src={block.image.src}
               alt={block.image.alt}
@@ -40,22 +38,17 @@ export function ProofBlock({ block, index }: Props) {
               </dt>
               <dd className="mt-1">{block.whatChanged}</dd>
             </div>
-            <div>
-              <dt className="font-mono text-xs uppercase tracking-widest text-muted">
+            <div className="border-l-2 border-rust pl-4">
+              <dt className="font-mono text-xs uppercase tracking-widest text-rust">
                 The decision
               </dt>
               <dd className="mt-1">{block.decision}</dd>
             </div>
             <div>
-              <dt className="font-mono text-xs uppercase tracking-widest text-muted">
-                Stack
-              </dt>
+              <dt className="font-mono text-xs uppercase tracking-widest text-muted">Stack</dt>
               <dd className="mt-1 flex flex-wrap gap-2">
                 {block.stack.map((item) => (
-                  <span
-                    key={item}
-                    className="border border-border px-2 py-1 font-mono text-xs"
-                  >
+                  <span key={item} className="rough-border px-2 py-1 font-mono text-xs">
                     {item}
                   </span>
                 ))}

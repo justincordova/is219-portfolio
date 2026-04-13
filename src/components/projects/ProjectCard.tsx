@@ -18,15 +18,12 @@ export function ProjectCard({ repo }: Props) {
         {repo.description ?? "No description."}
       </p>
       <div className="mt-4 flex items-center gap-2 font-mono text-xs uppercase text-muted">
-        {repo.language && (
-          <span className="border border-border px-2 py-1">{repo.language}</span>
-        )}
+        {repo.language && <span className="border border-border px-2 py-1">{repo.language}</span>}
       </div>
     </>
   );
 
-  const baseClasses =
-    "block border border-border p-5 no-underline transition-colors hover:border-accent";
+  const baseClasses = "block rough-border p-5 no-underline transition-colors hover:border-accent";
 
   if (external) {
     return (

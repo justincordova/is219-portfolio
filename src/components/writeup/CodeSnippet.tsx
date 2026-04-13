@@ -6,7 +6,7 @@ type Props = {
 
 export function CodeSnippet({ language, code, caption }: Props) {
   return (
-    <figure className="border border-border">
+    <figure className="rough-border">
       <div className="border-b border-border px-4 py-2 font-mono text-xs uppercase tracking-widest text-muted">
         {language}
       </div>
